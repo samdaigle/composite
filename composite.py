@@ -83,21 +83,24 @@ def get_tension(beam):
     return round(tension, 0)
 
 
-def find_c(t_deck, s, fpc, d, w_flange, t_web, fy, t_flange):
-    c = 0
+def find_c(low=0, high=(t_deck + d)):
+    c = ((high - low) / 2 + low)
 
-    for _ in range(int(t_deck + d) * 10000):
-        c += 0.0001
-        deck = Deck(c, t_deck, s, fpc)
-        beam = Beam(d, w_flange, t_flange, t_web, fy, c, t_deck)
-        compression = get_compression(deck, beam)
-        tension = get_tension(beam)
-        if compression == tension:
-            print(f'c = {round(c, 2)} in.')
-            print(f'tension = {tension} k')
-            print(f'compression = {compression} k')
-            return round(c, 2)
-    return 0
+    deck = Deck(c, t_deck, s, fpc)
+    beam = Beam(d, w_flange, t_flange, t_web, fy, c, t_deck)
+    compression = round(get_compression(deck, beam), 0)
+    tension = round(get_tension(beam), 0)
+    if compression == tension:
+        print(f'c = {round(c, 2)} in.')
+        print(f'tension = {tension} k')
+        print(f'compression = {compression} k')
+        return round(c, 2)
+    elif compression > tension:
+        high = c
+        return find_c(low, high)
+    else:
+        low = c
+        return find_c(low, high)
 
 
 def plastic_moment(c, deck, beam):
@@ -116,7 +119,7 @@ def plastic_moment(c, deck, beam):
 
 if __name__ == '__main__':
     print('\nResults: \n')
-    c = find_c(t_deck, s, fpc, d, w_flange, t_web, fy, t_flange)
+    c = find_c()
     deck = Deck(c, t_deck, s, fpc)
     beam = Beam(d, w_flange, t_flange, t_web, fy, c, t_deck)
     plastic_moment(c, deck, beam)

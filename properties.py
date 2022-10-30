@@ -1,3 +1,6 @@
+from beam_data import df
+
+
 def get_input(component, question):
     while True:
         try:
@@ -14,30 +17,38 @@ def get_input(component, question):
     return component
 
 
+def get_beam():
+    while True:
+        try:
+            beam_name = input('WF beam size (ex. W12x30): ').lower()
+
+            if beam_name not in df.index:
+                raise ValueError
+        except ValueError:
+            print('Please input a valid WF beam size.')
+            continue
+        break
+    return beam_name
+
+
 t_deck = 0
 fpc = 0
 s = 0
-d = 0
-w_flange = 0
-t_flange = 0
-t_web = 0
 fy = 0
 questions = {
     't_deck': 'Concrete deck thickness (in.): ',
     'fpc': 'Concrete design strength (ksi): ',
     's': 'Beam spacing (ft.): ',
-    'd': 'Beam depth (in.): ',
-    'w_flange': 'Flange width (in.): ',
-    't_flange': 'Flange thickness (in.): ',
-    't_web': 'Web thickness (in.): ',
     'fy': 'Yeild strenght of steel (ksi): '
 }
 
 t_deck = get_input(t_deck, questions['t_deck'])
 fpc = get_input(fpc, questions['fpc'])
 s = get_input(s, questions['s'])
-d = get_input(d, questions['d'])
-w_flange = get_input(w_flange, questions['w_flange'])
-t_flange = get_input(t_flange, questions['t_flange'])
-t_web = get_input(t_web, questions['t_web'])
+beam = get_beam()
 fy = get_input(fy, questions['fy'])
+
+d = df.at[beam, 'Depth']
+w_flange = df.at[beam, "Width"]
+t_flange = df.at[beam, "Flange Thickness"]
+t_web = df.at[beam, 'Web Thickness']
