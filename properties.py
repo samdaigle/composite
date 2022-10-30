@@ -1,11 +1,10 @@
 from beam_data import df
 
 
-def get_input(component, question):
+def get_input(question):
     while True:
         try:
             component = float(input(question))
-
             if component <= 0:
                 raise ValueError
 
@@ -13,7 +12,6 @@ def get_input(component, question):
             print('Please input a positive integer.')
             continue
         break
-
     return component
 
 
@@ -31,10 +29,6 @@ def get_beam():
     return beam_name
 
 
-t_deck = 0
-fpc = 0
-s = 0
-fy = 0
 questions = {
     't_deck': 'Concrete deck thickness (in.): ',
     'fpc': 'Concrete design strength (ksi): ',
@@ -42,12 +36,11 @@ questions = {
     'fy': 'Yeild strenght of steel (ksi): '
 }
 
-t_deck = get_input(t_deck, questions['t_deck'])
-fpc = get_input(fpc, questions['fpc'])
-s = get_input(s, questions['s'])
+t_deck = get_input(questions['t_deck'])
+fpc = get_input(questions['fpc'])
+s = get_input(questions['s'])
+fy = get_input(questions['fy'])
 beam = get_beam()
-fy = get_input(fy, questions['fy'])
-
 d = df.at[beam, 'Depth']
 w_flange = df.at[beam, "Width"]
 t_flange = df.at[beam, "Flange Thickness"]
